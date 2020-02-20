@@ -139,12 +139,19 @@ public class Main {
                 buffer.append(linea.charAt(j));
             }
             if(!buffer.toString().equals(""))
-                l_listbooks.add(Integer.valueOf(buffer.toString()), book_list.size());
+                l_listbooks.add(Integer.valueOf(buffer.toString()));
             buffer = new StringBuilder();
 
             System.out.println(l_listbooks);
 
             libraries_list.add(new Library(l_books, l_days, l_bpd, l_listbooks, book_list));
+
+
+        }
+        int id = 0;
+        for(Library l: libraries_list){
+            l.setId(id);
+            id++;
         }
 
         // RECORRER ARBOL =====================================================================================================
@@ -152,7 +159,7 @@ public class Main {
         int contador = 0;
         Library aux;
 
-        while(contador <= days){
+        while(contador <= days && !libraries_list.isEmpty()){
 
             for(Library l: libraries_list){
                 l.calcularScore();
@@ -164,18 +171,21 @@ public class Main {
 
             aux.setDia_inicio(contador);
 
-            contador = aux.dia_inicio + contador;
-
-            libraries_list.remove(0);
+            contador = aux.diasSignUp + contador;
 
             libraries_tree.add(aux);
 
+            libraries_list.remove(0);
+
+
         }
 
+
+        System.out.println(libraries_tree);
         ArrayList<StringBuilder> Out = new ArrayList<>();
 
         Iterator<Library> it = libraries_tree.iterator();
-        while(it.hasNext() ){
+        while(it.hasNext()){
             Library next = it.next();
             StringBuilder buf1 = new StringBuilder();
             StringBuilder buf2 = new StringBuilder();
@@ -204,7 +214,7 @@ public class Main {
         }
 
         salida(salida.toString());
-
+        //System.out.println(salida);
 
 
 
@@ -224,7 +234,8 @@ public class Main {
     public static void salida(String s) throws IOException {
         FileWriter file = new FileWriter(rutaSalida);
         PrintWriter print = new PrintWriter(file);
-        print.print(s);
+        BufferedWriter bf = new BufferedWriter(file);
+        bf.write(s);
     }
 
 }
@@ -250,6 +261,19 @@ class Library implements Comparable{
         this.dia_inicio = 0;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Library library = (Library) o;
+        return id == library.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
     public int getDia_inicio() {
         return dia_inicio;
     }
@@ -266,9 +290,9 @@ class Library implements Comparable{
         if(this.score == l2.score){
             return 0;
         }else if(this.score < l2.score){
-            return 1;
-        }else{
             return -1;
+        }else{
+            return 1;
         }
     }
 
@@ -338,6 +362,8 @@ class Library implements Comparable{
     }
 
 
+
+
 }
 
 class Book implements Comparable{
@@ -351,7 +377,18 @@ class Book implements Comparable{
         this.registrado = false;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return id == book.id;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
     @Override
     public int compareTo(Object o) {
