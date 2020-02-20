@@ -8,6 +8,7 @@ public class Main {
     public static int types;
 
     public static String rutaSalida;
+    public static String rutaEntrada;
 
     public static void main(String[] args) throws Exception{
 
@@ -18,12 +19,9 @@ public class Main {
         //int types;
         ArrayList<Integer> slices_types = new ArrayList<>();
         int i;
-        String rutaEntrada = "a_example.in";
+
 
         String linea;
-
-        FileReader file = new FileReader(rutaEntrada);
-        BufferedReader buff = new BufferedReader(file);
 
         Scanner sc = new Scanner(System.in);
         entrada = sc.nextLine();
@@ -34,7 +32,13 @@ public class Main {
             case "c": rutaEntrada = "c_example.in"; rutaSalida = "C.txt"; break;
             case "d": rutaEntrada = "d_example.in"; rutaSalida = "D.txt"; break;
             case "e": rutaEntrada = "e_example.in"; rutaSalida = "E.txt"; break;
+            default : rutaEntrada = "a_example.in"; rutaSalida = "A.txt"; break;
         }
+
+        FileReader file = new FileReader(rutaEntrada);
+        BufferedReader buff = new BufferedReader(file);
+
+        // ----------------------------
 
         linea = buff.readLine();
         for(i = 0; linea.charAt(i) != ' '; i++){
