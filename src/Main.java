@@ -7,6 +7,8 @@ public class Main {
     public static String rutaSalida;
     public static String rutaEntrada;
 
+    public static ArrayList<Book> book_list = new ArrayList<>();
+
     public static void main(String[] args) throws Exception{
 
         String entrada;
@@ -24,7 +26,7 @@ public class Main {
         int days;
         ArrayList<Integer> scores = new ArrayList<>();
         ArrayList<Library> libraries_list = new ArrayList<>();
-        ArrayList<Book> book_list = new ArrayList<>();
+
 
         switch (entrada){
             case "a": rutaEntrada = "a_example.txt"; rutaSalida = "A.txt"; break;
@@ -93,7 +95,7 @@ public class Main {
             int l_books;
             int l_days;
             int l_bpd;
-            ArrayList<Book> l_listbooks = new ArrayList<>();
+            ArrayList<Integer> l_listbooks = new ArrayList<>();
 
             linea = buff.readLine();
             for(i = 0; linea.charAt(i) != ' '; i++){
@@ -113,10 +115,6 @@ public class Main {
             l_bpd = Integer.valueOf(buffer.toString());
             buffer = new StringBuilder();
 
-            System.out.println(l_books + " " + l_days + " " + l_bpd);
-
-
-
 
             // ----------------------------
 
@@ -132,7 +130,7 @@ public class Main {
                     i++;
 
                 if(!buffer.toString().equals(""))
-                    l_listbooks.add(new Book(Integer.valueOf(buffer.toString()), book_list.size()));
+                    l_listbooks.add(Integer.valueOf(buffer.toString()));
                 buffer = new StringBuilder();
             }
 
@@ -140,13 +138,17 @@ public class Main {
                 buffer.append(linea.charAt(j));
             }
             if(!buffer.toString().equals(""))
-                l_listbooks.add(new Book(Integer.valueOf(buffer.toString()), book_list.size()));
+                l_listbooks.add(Integer.valueOf(buffer.toString()), book_list.size());
             buffer = new StringBuilder();
 
             System.out.println(l_listbooks);
 
-            libraries_list.add(new Library(l_books, l_days, l_bpd, l_listbooks));
+            libraries_list.add(new Library(l_books, l_days, l_bpd, l_listbooks, book_list));
         }
+
+        // =====================================================================================================
+
+        int scanned_libraries;
 
 
 
@@ -167,15 +169,33 @@ class Library{
     public int diasSignUp;
     public int numLibros;
     public int books_per_day;
-    public ArrayList<Book> books;
+    public ArrayList<Integer> books;
+    public ArrayList<Book> book_list;
 
-    public Library(int b, int d, int bpd, ArrayList<Book> books){
+    public Library(int b, int d, int bpd, ArrayList<Integer> books, ArrayList<Book> book_list){
         this.numLibros = b;
         this.diasSignUp = d;
         this.books_per_day = bpd;
         this.books = books;
         this.score = 0;
-        calcularScore();
+        this.book_list = book_list;
+    }
+
+    public String salida(){
+        String s = id + " " + numLibros + '\n';
+        StringBuilder sb = new StringBuilder(s);
+        for (Integer b : books){
+            sb.append(b);
+        }
+        return sb.toString();
+    }
+
+    public void calcularScore(){
+        for(Integer i : books){
+            Book b = book_list.get(i);
+            if(b.isRegistrado())
+                score += book_list.get(i).getScore();
+        }
     }
 
     public void setScore(int score) {
@@ -186,9 +206,6 @@ class Library{
         this.id = id;
     }
 
-    public void setBooks(ArrayList<Book> books) {
-        this.books = books;
-    }
 
     public void setBooks_per_day(int books_per_day) {
         this.books_per_day = books_per_day;
@@ -202,11 +219,6 @@ class Library{
         this.numLibros = numLibros;
     }
 
-    public void calcularScore(){
-        for (Book b : books) {
-            score += b.getScore();
-        }
-    }
 
 }
 
@@ -239,6 +251,10 @@ class Book{
 
     public int getScore() {
         return score;
+    }
+
+    public boolean isRegistrado() {
+        return registrado;
     }
 }
 
