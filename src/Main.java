@@ -171,14 +171,17 @@ public class Main {
 }
 
 class Library{
-    public int b;
-    public int d;
+
+    public int id;
+    public int score;
+    public int diasSignUp;
+    public int numLibros;
     public int books_per_day;
     public ArrayList<Integer> books;
 
     public Library(int b, int d, int bpd, ArrayList<Integer> books){
-        this.b = b;
-        this.d = d;
+        this.numLibros = b;
+        this.diasSignUp = d;
         this.books_per_day = bpd;
         this.books = books;
     }
