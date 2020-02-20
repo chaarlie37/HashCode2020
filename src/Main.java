@@ -1,18 +1,15 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.TreeSet;
+import java.util.*;
 
 public class Main {
 
     public static String rutaSalida;
     public static String rutaEntrada;
+    public static ArrayList<Library> scannedLibraries = new ArrayList<>();
 
     public static ArrayList<Book> book_list = new ArrayList<>();
 
     public static void main(String[] args) throws Exception{
-
-        TreeSet<Library> libraries_tree = new TreeSet<>();
 
         String entrada;
 
@@ -29,6 +26,7 @@ public class Main {
         int days;
         ArrayList<Integer> scores = new ArrayList<>();
         ArrayList<Library> libraries_list = new ArrayList<>();
+        TreeSet<Library> libraries_tree = new TreeSet<>();
 
 
         switch (entrada){
@@ -149,11 +147,77 @@ public class Main {
             libraries_list.add(new Library(l_books, l_days, l_bpd, l_listbooks, book_list));
         }
 
-        // =====================================================================================================
+        // RECORRER ARBOL =====================================================================================================
 
-        int scanned_libraries;
+        int contador = 0;
+        Library aux;
+
+        while(contador <= days){
+
+            for(Library l: libraries_list){
+                l.calcularScore();
+            }
+
+            Collections.sort(libraries_list);
+
+            aux = libraries_list.get(0);
+
+            aux.setDia_inicio(contador);
+
+            contador = aux.dia_inicio + contador;
+
+            libraries_list.remove(0);
+
+            libraries_tree.add(aux);
+
+        }
+
+        ArrayList<StringBuilder> Out = new ArrayList<>();
+
+        Iterator<Library> it = libraries_tree.iterator();
+        while(it.hasNext() ){
+            Library next = it.next();
+            StringBuilder buf1 = new StringBuilder();
+            StringBuilder buf2 = new StringBuilder();
+            contador = next.dia_inicio + next.diasSignUp;
+            int j = 0;
+
+            while(j < next.books.size() && contador < days){
+                int librosPorDia = 0;
+                while(j<next.books.size() && librosPorDia < next.books_per_day){
+                    buf2.append(next.books.get(j) + " ");
+                    j++;
+                    librosPorDia++;
+                }
+                contador = contador + next.diasSignUp;
+            }
+            buf1.append(next.id + " " + j + "\n" + buf2);
+
+            Out.add(buf1);
+
+        }
+
+        StringBuilder salida = new StringBuilder();
+        salida.append(Out.size() + " \n");
+        for(StringBuilder s: Out){
+            salida.append(s + "\n");
+        }
+
+        salida(salida.toString());
 
 
+
+
+
+        // SALIDA =====================================================================================================
+
+        StringBuilder buffLibreria = new StringBuilder("");
+        int scanned_libraries = scannedLibraries.size();
+        for(Library l : scannedLibraries){
+            buffLibreria.append(l.getId() + " ");
+            buffLibreria.append(l.getNumLibros() + '\n');
+            buffLibreria.append(l.escribirLibros());
+        }
 
     }
 
@@ -174,6 +238,7 @@ class Library implements Comparable{
     public int books_per_day;
     public ArrayList<Integer> books;
     public ArrayList<Book> book_list;
+    public int dia_inicio;
 
     public Library(int b, int d, int bpd, ArrayList<Integer> books, ArrayList<Book> book_list){
         this.numLibros = b;
@@ -182,6 +247,15 @@ class Library implements Comparable{
         this.books = books;
         this.score = 0;
         this.book_list = book_list;
+        this.dia_inicio = 0;
+    }
+
+    public int getDia_inicio() {
+        return dia_inicio;
+    }
+
+    public void setDia_inicio(int dia_inicio) {
+        this.dia_inicio = dia_inicio;
     }
 
     @Override
@@ -191,7 +265,7 @@ class Library implements Comparable{
 
         if(this.score == l2.score){
             return 0;
-        }else if(this.score > l2.score){
+        }else if(this.score < l2.score){
             return 1;
         }else{
             return -1;
@@ -217,6 +291,23 @@ class Library implements Comparable{
         }
     }
 
+    public String escribirLibros(){
+        StringBuilder s = new StringBuilder("");
+        for(Integer i : books){
+            s.append(i + " ");
+        }
+        return s.toString();
+    }
+
+    /*
+    public ordenarLibros(){
+        for(Integer b : books){
+
+        }
+    }
+    */
+
+
     public void setScore(int score) {
         this.score = score;
     }
@@ -238,10 +329,18 @@ class Library implements Comparable{
         this.numLibros = numLibros;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public int getNumLibros() {
+        return numLibros;
+    }
+
 
 }
 
-class Book{
+class Book implements Comparable{
     public boolean registrado;
     public int score;
     public int id;
@@ -250,6 +349,22 @@ class Book{
         this.score = score;
         this.id = id;
         this.registrado = false;
+    }
+
+
+
+    @Override
+    public int compareTo(Object o) {
+
+        Book l2 = (Book) o;
+
+        if(this.score == l2.score){
+            return 0;
+        }else if(this.score > l2.score){
+            return 1;
+        }else{
+            return -1;
+        }
     }
 
     public void setId(int id) {
