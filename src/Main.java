@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.TreeSet;
 
 public class Main {
 
@@ -10,6 +11,8 @@ public class Main {
     public static ArrayList<Book> book_list = new ArrayList<>();
 
     public static void main(String[] args) throws Exception{
+
+        TreeSet<Library> libraries_tree = new TreeSet<>();
 
         String entrada;
 
@@ -162,7 +165,7 @@ public class Main {
 
 }
 
-class Library{
+class Library implements Comparable{
 
     public int id;
     public int score;
@@ -180,6 +183,22 @@ class Library{
         this.score = 0;
         this.book_list = book_list;
     }
+
+    @Override
+    public int compareTo(Object o) {
+
+        Library l2 = (Library) o;
+
+        if(this.score == l2.score){
+            return 0;
+        }else if(this.score > l2.score){
+            return 1;
+        }else{
+            return -1;
+        }
+    }
+
+
 
     public String salida(){
         String s = id + " " + numLibros + '\n';
