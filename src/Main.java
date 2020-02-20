@@ -10,6 +10,9 @@ public class Main {
     public static String rutaSalida;
     public static String rutaEntrada;
 
+    
+
+
     public static void main(String[] args) throws Exception{
 
         String entrada;
