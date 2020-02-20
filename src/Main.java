@@ -4,25 +4,15 @@ import java.util.Scanner;
 
 public class Main {
 
-    static ArrayList<Integer> salida_buena = new ArrayList<>();
-    public static int types;
-
     public static String rutaSalida;
     public static String rutaEntrada;
-
-    
-
 
     public static void main(String[] args) throws Exception{
 
         String entrada;
 
-        int slices;
         StringBuilder buffer = new StringBuilder();
-        //int types;
-        ArrayList<Integer> slices_types = new ArrayList<>();
         int i;
-
 
         String linea;
 
@@ -34,6 +24,7 @@ public class Main {
         int days;
         ArrayList<Integer> scores = new ArrayList<>();
         ArrayList<Library> libraries_list = new ArrayList<>();
+        ArrayList<Book> book_list = new ArrayList<>();
 
         switch (entrada){
             case "a": rutaEntrada = "a_example.txt"; rutaSalida = "A.txt"; break;
@@ -83,7 +74,7 @@ public class Main {
                 i++;
 
             if(!buffer.toString().equals(""))
-                scores.add(Integer.valueOf(buffer.toString()));
+                book_list.add(new Book(Integer.valueOf(buffer.toString()), book_list.size()));
             buffer = new StringBuilder();
         }
 
@@ -91,10 +82,9 @@ public class Main {
             buffer.append(linea.charAt(j));
         }
         if(!buffer.toString().equals(""))
-            scores.add(Integer.valueOf(buffer.toString()));
+            book_list.add(new Book(Integer.valueOf(buffer.toString()), book_list.size()));
         buffer = new StringBuilder();
 
-        System.out.println(scores);
 
         // ===================================
 
@@ -103,7 +93,7 @@ public class Main {
             int l_books;
             int l_days;
             int l_bpd;
-            ArrayList<Integer> l_listbooks = new ArrayList<>();
+            ArrayList<Book> l_listbooks = new ArrayList<>();
 
             linea = buff.readLine();
             for(i = 0; linea.charAt(i) != ' '; i++){
@@ -142,7 +132,7 @@ public class Main {
                     i++;
 
                 if(!buffer.toString().equals(""))
-                    l_listbooks.add(Integer.valueOf(buffer.toString()));
+                    l_listbooks.add(new Book(Integer.valueOf(buffer.toString()), book_list.size()));
                 buffer = new StringBuilder();
             }
 
@@ -150,7 +140,7 @@ public class Main {
                 buffer.append(linea.charAt(j));
             }
             if(!buffer.toString().equals(""))
-                l_listbooks.add(Integer.valueOf(buffer.toString()));
+                l_listbooks.add(new Book(Integer.valueOf(buffer.toString()), book_list.size()));
             buffer = new StringBuilder();
 
             System.out.println(l_listbooks);
@@ -177,15 +167,78 @@ class Library{
     public int diasSignUp;
     public int numLibros;
     public int books_per_day;
-    public ArrayList<Integer> books;
+    public ArrayList<Book> books;
 
-    public Library(int b, int d, int bpd, ArrayList<Integer> books){
+    public Library(int b, int d, int bpd, ArrayList<Book> books){
         this.numLibros = b;
         this.diasSignUp = d;
         this.books_per_day = bpd;
         this.books = books;
+        this.score = 0;
+        calcularScore();
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setBooks(ArrayList<Book> books) {
+        this.books = books;
+    }
+
+    public void setBooks_per_day(int books_per_day) {
+        this.books_per_day = books_per_day;
+    }
+
+    public void setDiasSignUp(int diasSignUp) {
+        this.diasSignUp = diasSignUp;
+    }
+
+    public void setNumLibros(int numLibros) {
+        this.numLibros = numLibros;
+    }
+
+    public void calcularScore(){
+        for (Book b : books) {
+            score += b.getScore();
+        }
     }
 
 }
 
+class Book{
+    public boolean registrado;
+    public int score;
+    public int id;
+
+    public Book(int score, int id){
+        this.score = score;
+        this.id = id;
+        this.registrado = false;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setRegistrado(boolean registrado) {
+        this.registrado = registrado;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getScore() {
+        return score;
+    }
+}
 
